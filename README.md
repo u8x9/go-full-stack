@@ -4,7 +4,10 @@
 
 环境：
 
-MacOS 10.15.7
-Go 1.15.2
-vim 8
-zsh
++  MacOS 10.15.7
+
++ Go 1.15.2
+
++ vim 8
+
++ zsh
