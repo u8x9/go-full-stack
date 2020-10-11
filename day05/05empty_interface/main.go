@@ -23,7 +23,17 @@ func main() {
 	// 类型断言
 
 	var xx interface{} = "Hello"
-	if v, ok := xx.(string); ok {
+	//if v, ok := xx.(string); ok {
+	//fmt.Println(strings.ToUpper(v))
+	//}
+	switch v := xx.(type) {
+	case string:
 		fmt.Println(strings.ToUpper(v))
+	case int:
+		fmt.Println(v * v)
+	case bool:
+		fmt.Println(!v)
+	default:
+		fmt.Println("就你皮")
 	}
 }
