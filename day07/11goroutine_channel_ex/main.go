@@ -27,6 +27,7 @@ func calc(jobChan <-chan int64, resultChan chan<- int64) {
         time.Sleep(time.Microsecond * 300)
 	}
 }
+// 计算各位数的和
 func sum(i int64) int64 {
     n := i
     s := int64(0)
