@@ -1,0 +1,6 @@
+.idea
+.vscode
+.atom
+*.log
+*.txt
+.DS_Store
