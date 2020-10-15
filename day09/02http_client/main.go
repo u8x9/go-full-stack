@@ -77,9 +77,13 @@ func proxyWithHeader() {
 	data.Set("name", "张三")
 	data.Set("gender", "男")
 	data.Set("age", "123")
-	encodeData := data.Encode()
-	targetUrlWithParam := fmt.Sprintf("%s?%s", targetUrl, encodeData)
-	req, err := http.NewRequest(http.MethodGet, targetUrlWithParam, nil)
+	urlObj, err := url.ParseRequestURI(targetUrl)
+	if err != nil {
+		fmt.Println("ParseRequestURI failed:", err)
+		return
+	}
+	urlObj.RawQuery = data.Encode()
+	req, err := http.NewRequest(http.MethodGet, urlObj.String(), nil)
 	if err != nil {
 		fmt.Println("new request failed:", err)
 		return
@@ -98,6 +102,7 @@ func proxyWithHeader() {
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: false,
 		},
+        DisableKeepAlives: true,
 	}
 	client := &http.Client{
 		Transport: tr,
