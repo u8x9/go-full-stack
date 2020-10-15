@@ -73,7 +73,7 @@ func proxy() {
 
 // proxyWithHeader 使用代理并设置header
 func proxyWithHeader() {
-	req, err := http.NewRequest("GET", targetUrl, nil)
+	req, err := http.NewRequest(http.MethodGet, targetUrl, nil)
 	if err != nil {
 		fmt.Println("new request failed:", err)
 		return
