@@ -73,7 +73,13 @@ func proxy() {
 
 // proxyWithHeader 使用代理并设置header
 func proxyWithHeader() {
-	req, err := http.NewRequest(http.MethodGet, targetUrl, nil)
+	data := make(url.Values)
+	data.Set("name", "张三")
+	data.Set("gender", "男")
+	data.Set("age", "123")
+	encodeData := data.Encode()
+	targetUrlWithParam := fmt.Sprintf("%s?%s", targetUrl, encodeData)
+	req, err := http.NewRequest(http.MethodGet, targetUrlWithParam, nil)
 	if err != nil {
 		fmt.Println("new request failed:", err)
 		return
