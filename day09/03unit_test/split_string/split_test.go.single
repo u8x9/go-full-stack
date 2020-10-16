@@ -1,0 +1,26 @@
+package split_string
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestSplit(t *testing.T) {
+	want := []string{"127", "0", "0", "1"}
+	got := Split("127.0.0.1", ".")
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("Excepted: %v, got: %v\n", want, got)
+	}
+	got = Split("127xx0xx0xx1", "xx")
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("Excepted: %v, got: %v\n", want, got)
+	}
+	got = Split("xx127xx0xx0xx1", "xx")
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("Excepted: %v, got: %v\n", want, got)
+	}
+	got = Split("127xx0xx0xx1xx", "xx")
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("Excepted: %v, got: %v\n", want, got)
+	}
+}
