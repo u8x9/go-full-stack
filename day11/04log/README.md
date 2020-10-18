@@ -34,10 +34,6 @@ $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
 ### 工作流程
 
 + 读日志 -- tailf 第三方库
-+ 往kafka里写日志
 
-### 下载安装
++ 往kafka里写日志-- sarama 第三方库
 
-```bash
-go get github.com/Shopify/sarama
-```
