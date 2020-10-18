@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/u8x9/go-full-stack/day11/logagent/kafka"
 	"github.com/u8x9/go-full-stack/day11/logagent/taillog"
@@ -24,6 +25,7 @@ func run() {
 				fmt.Println("read log failed")
 			}
 		default:
+            time.Sleep(time.Second)
 
 		}
 	}
