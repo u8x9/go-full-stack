@@ -1,20 +1,25 @@
 package kafka
 
 import (
+	"time"
+
 	"github.com/Shopify/sarama"
 )
 
 // 专门将日志写入kafka的模块
 
+type logData struct {
+	topic string
+	data  string
+}
+
 var (
-	client       sarama.SyncProducer
-	locatAddress = []string{"127.0.0.1:9092"}
+	client      sarama.SyncProducer
+	logDataChan chan *logData
 )
 
-const DEFAULT_TOPIC = "web_log"
-
 // Init 初始化 kafka 连接
-func Init(address []string) error {
+func Init(address []string, chanMaxSize int) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -24,26 +29,32 @@ func Init(address []string) error {
 	if client, err = sarama.NewSyncProducer(address, config); err != nil {
 		return err
 	}
+	logDataChan = make(chan *logData, chanMaxSize)
+	go sendMessage()
 	return nil
 }
 
-// InitDefaultLocalSingle 初始化本地单节点kafka
-func InitDefaultLocalSingle() error {
-	return Init(locatAddress)
+// SendToChan 给外部暴露一个函数，该函数只把日志数据发送到一个内部的channel 中
+func SendToChan(topic, data string) {
+	logDataChan <- &logData{
+		topic: topic,
+		data:  data,
+	}
 }
 
-// SendMessageToTopic 发送消息到指定topic
-func SendMessageToTopic(topic, message string) (pid int32, offset int64, err error) {
-	msg := new(sarama.ProducerMessage)
-	msg.Topic = topic
-	msg.Value = sarama.StringEncoder(message)
-	pid, offset, err = client.SendMessage(msg)
-	return
-}
-
-// SendMessage 发送消息到默认topic
-func SendMessage(message string) (pid int32, offset int64, err error) {
-	return SendMessageToTopic(DEFAULT_TOPIC, message)
+// 真正发送消息到指定kafka
+func sendMessage() {
+	for {
+		select {
+		case ld := <-logDataChan:
+			msg := new(sarama.ProducerMessage)
+			msg.Topic = ld.topic
+			msg.Value = sarama.StringEncoder(ld.data)
+			client.SendMessage(msg)
+		default:
+			time.Sleep(time.Millisecond * 50)
+		}
+	}
 }
 
 // Close 关闭连接
